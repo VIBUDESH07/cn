@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numeric Conversion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+        h2 {
+            text-align: center;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Numeric Conversion</h2>
+        <label for="conversion">Choose a conversion type:</label>
+        <select id="conversion">
+            <option value="decimal_to_binary">Decimal to Binary</option>
+            <option value="decimal_to_octal">Decimal to Octal</option>
+            <option value="decimal_to_hexadecimal">Decimal to Hexadecimal</option>
+            <option value="binary_to_decimal">Binary to Decimal</option>
+            <option value="octal_to_decimal">Octal to Decimal</option>
+            <option value="hexadecimal_to_decimal">Hexadecimal to Decimal</option>
+        </select>
+
+        <label for="value">Enter the value:</label>
+        <input type="text" id="value" placeholder="Enter the number or string">
+
+        <button id="convertBtn">Convert</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('convertBtn').addEventListener('click', function() {
+            const conversionType = document.getElementById('conversion').value;
+            const value = document.getElementById('value').value;
+
+            if (!value) {
+                alert('Please enter a value!');
+                return;
+            }
+
+            const ws = new WebSocket('ws://localhost:8765');  // WebSocket server URL
+
+            ws.onopen = function() {
+                console.log('WebSocket connection established.');
+                // Send the conversion request to the server
+                ws.send(`${conversionType},${value}`);
+            };
+
+            ws.onmessage = function(event) {
+                // Display the result received from the server
+                document.getElementById('result').innerText = `Result: ${event.data}`;
+            };
+
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+            };
+
+            ws.onclose = function() {
+                console.log('WebSocket connection closed.');
+            };
+        });
+    </script>
+</body>
+</html>
