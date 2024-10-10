@@ -66,7 +66,8 @@ async def conversion_handler(websocket, path):
 
 # Main server function
 async def main():
-    async with websockets.serve(conversion_handler, "localhost", 8765):
+    async with websockets.serve(conversion_handler, "0.0.0.0", 8765):
+
         print("WebSocket server is running on ws://localhost:8765")
         await asyncio.Future()  # Run forever
 
